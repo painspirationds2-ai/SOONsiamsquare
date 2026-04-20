@@ -1,0 +1,227 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.wrap{padding:1.5rem;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px;}
+.header h1{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+.save-badge{font-size:12px;color:var(--color-text-secondary);display:flex;align-items:center;gap:6px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;display:inline-block;}
+.dot.saving{background:#EF9F27;}
+.add-btn{display:flex;align-items:center;gap:6px;font-size:13px;padding:6px 14px;border-radius:var(--border-radius-md);border:0.5px dashed var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;margin-top:10px;width:100%;}
+.add-btn:hover{background:var(--color-background-secondary);}
+.month-section{margin-bottom:1.75rem;}
+.month-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.month-label-input{font-size:13px;font-weight:500;color:var(--color-text-secondary);background:transparent;border:none;outline:none;border-bottom:1px dashed transparent;padding:2px 4px;border-radius:4px;}
+.month-label-input:hover{border-bottom-color:var(--color-border-secondary);}
+.month-label-input:focus{border-bottom-color:var(--color-border-primary);color:var(--color-text-primary);}
+.del-month{font-size:12px;color:var(--color-text-secondary);background:transparent;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;opacity:0;}
+.month-row:hover .del-month{opacity:1;}
+.del-month:hover{background:var(--color-background-danger);color:var(--color-text-danger);}
+.task-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.75rem 1rem;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;}
+.task-card:hover{border-color:var(--color-border-secondary);}
+.task-left{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
+.status-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--color-border-secondary);background:var(--color-border-secondary);cursor:pointer;flex-shrink:0;transition:background .15s;}
+.status-dot[data-s="active"]{background:#378ADD;border-color:#B5D4F4;}
+.status-dot[data-s="critical"]{background:#D85A30;border-color:#F5C4B3;}
+.status-dot[data-s="done"]{background:#1D9E75;border-color:#9FE1CB;}
+.status-dot[data-s="pending"]{background:var(--color-border-secondary);}
+.drag-handle{font-size:14px;color:var(--color-text-secondary);cursor:grab;user-select:none;opacity:.4;}
+.drag-handle:hover{opacity:1;}
+.task-body{flex:1;min-width:0;}
+.task-top{display:flex;gap:8px;align-items:flex-start;}
+.task-name-input{font-size:14px;font-weight:500;color:var(--color-text-primary);background:transparent;border:none;outline:none;border-bottom:1px dashed transparent;padding:1px 2px;flex:1;min-width:0;}
+.task-name-input:hover{border-bottom-color:var(--color-border-secondary);}
+.task-name-input:focus{border-bottom-color:var(--color-border-primary);}
+.tag-select{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;}
+.task-sub-input{font-size:12px;color:var(--color-text-secondary);background:transparent;border:none;outline:none;border-bottom:1px dashed transparent;padding:1px 2px;width:100%;margin-top:4px;}
+.task-sub-input:hover{border-bottom-color:var(--color-border-secondary);}
+.task-sub-input:focus{border-bottom-color:var(--color-border-primary);}
+.del-task{font-size:11px;color:var(--color-text-secondary);background:transparent;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;opacity:0;flex-shrink:0;}
+.task-card:hover .del-task{opacity:1;}
+.del-task:hover{background:var(--color-background-danger);color:var(--color-text-danger);}
+.add-month-btn{display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;padding:8px 20px;border-radius:var(--border-radius-md);border:0.5px dashed var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;margin-top:.5rem;}
+.add-month-btn:hover{background:var(--color-background-secondary);}
+.critical-box{background:#FAECE7;border:0.5px solid #F0997B;border-radius:var(--border-radius-md);padding:1rem 1.25rem;margin-top:1.5rem;}
+.critical-title{font-size:13px;font-weight:500;color:#712B13;margin-bottom:8px;}
+.critical-item{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.critical-item input{font-size:13px;color:#993C1D;background:transparent;border:none;outline:none;border-bottom:1px dashed transparent;padding:1px 2px;flex:1;}
+.critical-item input:hover{border-bottom-color:#F0997B;}
+.critical-item input:focus{border-bottom-color:#D85A30;}
+.del-c{font-size:11px;background:transparent;border:none;cursor:pointer;color:#D85A30;opacity:0;padding:2px 4px;border-radius:4px;}
+.critical-item:hover .del-c{opacity:1;}
+.add-c-btn{font-size:12px;color:#993C1D;background:transparent;border:none;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:2px;}
+.timeline-line{position:relative;padding-left:24px;}
+.timeline-line::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:1px;background:var(--color-border-secondary);}
+.task-card{position:relative;}
+.task-card::before{content:'';position:absolute;left:-19px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;border:2px solid var(--color-background-primary);background:var(--color-border-secondary);}
+[data-s="active"] ~ .task-card::before,[data-s="active"]{background:#378ADD;}
+</style>
+
+<div class="wrap">
+  <div class="header">
+    <h1 id="plan-title" contenteditable="true" style="outline:none;border-bottom:1px dashed transparent;" onmouseover="this.style.borderBottomColor='var(--color-border-secondary)'" onmouseout="this.style.borderBottomColor='transparent'" onfocus="this.style.borderBottomColor='var(--color-border-primary)'" onblur="this.style.borderBottomColor='transparent';save()">แผนรีโนเวทร้าน Soon Siam</h1>
+    <div class="save-badge"><span class="dot" id="save-dot"></span><span id="save-text">บันทึกแล้ว</span></div>
+  </div>
+  <div id="months-container"></div>
+  <button class="add-month-btn" onclick="addMonth()">+ เพิ่มเดือน</button>
+
+  <div class="critical-box" style="margin-top:1.5rem;">
+    <div class="critical-title">สิ่งที่ต้องระวัง — Critical Path</div>
+    <div id="critical-items"></div>
+    <button class="add-c-btn" onclick="addCritical()">+ เพิ่มรายการ</button>
+  </div>
+</div>
+
+<script>
+const STATUS_CYCLE = ['pending','active','critical','done'];
+const STATUS_LABEL = {pending:'รอดำเนินการ',active:'กำลังดำเนินการ',critical:'ด่วน',done:'เสร็จแล้ว'};
+
+const DEFAULT = {
+  title:'แผนรีโนเวทร้าน Soon Siam',
+  months:[
+    {id:'m1',label:'เมษายน 2569',tasks:[
+      {id:'t1',name:'รอแบบ Final',sub:'ขั้นตอนแรก — ต้องได้แบบก่อนเดินหน้าทุกอย่าง',tag:'เม.ย. 2569',status:'active'},
+      {id:'t2',name:'แบบเรนเดอร์จาก Final',sub:'เรนเดอร์ผ่านแบบ Final เพื่อประกอบการตัดสินใจ',tag:'ภายในเม.ย. 2569',status:'active'},
+      {id:'t3',name:'หาช่างทำร้าน — เปรียบเทียบ',sub:'ไม่เกินกลางพฤษภาคม',tag:'เม.ย.–กลางพ.ค.',status:'active'},
+      {id:'t4',name:'ทำ 3D รูปหน้าร้าน Soon Siam',sub:'ประกอบการนำเสนอและขออนุญาตจุฬาฯ',tag:'ระหว่างดำเนินการ',status:'pending'},
+    ]},
+    {id:'m2',label:'พฤษภาคม 2569',tasks:[
+      {id:'t5',name:'ส่งแบบจุฬาฯ',sub:'ต้องมีแบบ Final + 3D พร้อม',tag:'ต้นพ.ค.',status:'critical'},
+      {id:'t6',name:'นัดคุยกับจุฬาฯ',sub:'ต้องผ่านก่อนเริ่มรีโนเวท',tag:'ต้นพ.ค.',status:'critical'},
+    ]},
+    {id:'m3',label:'มิถุนายน 2569',tasks:[
+      {id:'t7',name:'เริ่มรีโนเวทร้าน',sub:'ทุกอย่างต้องเรียบร้อยครบถ้วนก่อนลงมือ',tag:'ต้นมิ.ย.',status:'done'},
+    ]},
+  ],
+  critical:[
+    'แบบ Final ต้องได้ก่อน — ถ้าช้า ทุกขั้นตอนหลังล่าช้าตาม',
+    'จุฬาฯ ต้องอนุมัติก่อนมิถุนายน — ถ้าไม่ผ่าน รีโนเวทไม่ได้',
+    'ช่างต้องนัดล็อกวันได้ก่อนกลางพฤษภาคม',
+  ]
+};
+
+let data;
+let saveTimer;
+
+async function load(){
+  try{
+    const r=await window.storage.get('soon_siam_plan');
+    data=r?JSON.parse(r.value):JSON.parse(JSON.stringify(DEFAULT));
+  }catch(e){data=JSON.parse(JSON.stringify(DEFAULT));}
+  render();
+}
+
+function save(){
+  document.getElementById('save-dot').className='dot saving';
+  document.getElementById('save-text').textContent='กำลังบันทึก...';
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    data.title=document.getElementById('plan-title').textContent.trim();
+    try{await window.storage.set('soon_siam_plan',JSON.stringify(data));}catch(e){}
+    document.getElementById('save-dot').className='dot';
+    document.getElementById('save-text').textContent='บันทึกแล้ว';
+  },600);
+}
+
+function uid(){return 'x'+Math.random().toString(36).slice(2,7);}
+
+function render(){
+  document.getElementById('plan-title').textContent=data.title;
+  const mc=document.getElementById('months-container');
+  mc.innerHTML='';
+  data.months.forEach(m=>{
+    const sec=document.createElement('div');
+    sec.className='month-section';
+    sec.innerHTML=`
+      <div class="month-row">
+        <input class="month-label-input" value="${m.label}" oninput="updateMonthLabel('${m.id}',this.value)" onchange="save()">
+        <button class="del-month" onclick="delMonth('${m.id}')">ลบเดือน</button>
+      </div>
+      <div class="timeline-line" id="tasks-${m.id}"></div>
+      <button class="add-btn" onclick="addTask('${m.id}')">+ เพิ่มงาน</button>
+    `;
+    mc.appendChild(sec);
+    const tl=document.getElementById('tasks-'+m.id);
+    m.tasks.forEach(t=>tl.appendChild(makeTaskCard(m.id,t)));
+  });
+  const ci=document.getElementById('critical-items');
+  ci.innerHTML='';
+  data.critical.forEach((c,i)=>{
+    const row=document.createElement('div');
+    row.className='critical-item';
+    row.innerHTML=`<input value="${c}" oninput="updateCritical(${i},this.value)" onchange="save()"><button class="del-c" onclick="delCritical(${i})">✕</button>`;
+    ci.appendChild(row);
+  });
+}
+
+function makeTaskCard(mid,t){
+  const card=document.createElement('div');
+  card.className='task-card';
+  card.innerHTML=`
+    <div class="task-left">
+      <div class="status-dot" data-s="${t.status}" title="คลิกเปลี่ยนสถานะ" onclick="cycleStatus('${mid}','${t.id}',this)"></div>
+      <span class="drag-handle">⠿</span>
+    </div>
+    <div class="task-body">
+      <div class="task-top">
+        <input class="task-name-input" value="${t.name}" oninput="updateTask('${mid}','${t.id}','name',this.value)" onchange="save()">
+        <input class="tag-select" value="${t.tag}" oninput="updateTask('${mid}','${t.id}','tag',this.value)" onchange="save()" style="width:110px;font-size:11px;border-radius:20px;">
+        <button class="del-task" onclick="delTask('${mid}','${t.id}')">✕</button>
+      </div>
+      <input class="task-sub-input" value="${t.sub}" oninput="updateTask('${mid}','${t.id}','sub',this.value)" onchange="save()">
+    </div>
+  `;
+  return card;
+}
+
+function cycleStatus(mid,tid,dot){
+  const m=data.months.find(x=>x.id===mid);
+  const t=m.tasks.find(x=>x.id===tid);
+  const i=STATUS_CYCLE.indexOf(t.status);
+  t.status=STATUS_CYCLE[(i+1)%STATUS_CYCLE.length];
+  dot.setAttribute('data-s',t.status);
+  save();
+}
+
+function updateMonthLabel(mid,val){
+  data.months.find(x=>x.id===mid).label=val;
+}
+function updateTask(mid,tid,field,val){
+  const m=data.months.find(x=>x.id===mid);
+  m.tasks.find(x=>x.id===tid)[field]=val;
+}
+function updateCritical(i,val){data.critical[i]=val;}
+
+function addTask(mid){
+  const m=data.months.find(x=>x.id===mid);
+  const t={id:uid(),name:'งานใหม่',sub:'รายละเอียด',tag:'',status:'pending'};
+  m.tasks.push(t);
+  const tl=document.getElementById('tasks-'+mid);
+  tl.appendChild(makeTaskCard(mid,t));
+  save();
+}
+function delTask(mid,tid){
+  const m=data.months.find(x=>x.id===mid);
+  m.tasks=m.tasks.filter(x=>x.id!==tid);
+  render();save();
+}
+function addMonth(){
+  data.months.push({id:uid(),label:'เดือนใหม่ 2569',tasks:[]});
+  render();save();
+}
+function delMonth(mid){
+  if(!confirm('ลบเดือนนี้?'))return;
+  data.months=data.months.filter(x=>x.id!==mid);
+  render();save();
+}
+function addCritical(){
+  data.critical.push('รายการใหม่');
+  render();save();
+}
+function delCritical(i){
+  data.critical.splice(i,1);
+  render();save();
+}
+
+load();
+</script>
