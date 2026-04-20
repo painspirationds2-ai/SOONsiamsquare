@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soon Siam Reno Plan</title>
+    <title>Soon Siam Reno - Live Plan</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1D9E75;
-            --primary-light: #9FE1CB;
             --danger: #D85A30;
             --warning: #EF9F27;
             --bg: #F8F9FA;
@@ -20,26 +19,22 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif; }
-
         body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding-bottom: 50px; }
-
         .container { max-width: 700px; margin: 0 auto; padding: 20px; }
 
-        /* Header Section */
+        /* Loading Overlay */
+        #loading {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+
+        /* Header */
         .header { 
             background: white; padding: 25px; border-radius: var(--radius); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px;
-            display: flex; align-items: center; gap: 15px; position: relative;
+            position: relative;
         }
-        .mascot-img { width: 60px; height: 60px; object-fit: contain; border-radius: 50%; background: #eee; }
-        
-        .header-content { flex: 1; }
-        #plan-title { 
-            font-size: 22px; font-weight: 500; border: none; outline: none; width: 100%;
-            border-bottom: 2px solid transparent; transition: 0.3s;
-        }
-        #plan-title:focus { border-bottom-color: var(--primary); }
-
         .save-status { 
             position: absolute; top: 10px; right: 15px; font-size: 11px; 
             display: flex; align-items: center; gap: 5px; color: var(--text-sub);
@@ -47,121 +42,128 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
         .dot.saving { background: var(--warning); animation: blink 0.8s infinite; }
 
-        /* Month Section */
+        #plan-title { 
+            font-size: 22px; font-weight: 500; border: none; outline: none; width: 100%;
+            border-bottom: 2px solid transparent; padding: 5px 0;
+        }
+        #plan-title:focus { border-bottom-color: var(--primary); }
+
+        /* Content */
         .month-card { margin-bottom: 30px; }
-        .month-header { 
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
-            padding: 0 10px;
-        }
-        .month-input { 
-            font-size: 18px; font-weight: 500; color: var(--primary); border: none; 
-            background: transparent; outline: none; width: 60%;
-        }
-        .btn-del-month { font-size: 12px; color: #ff7675; border: none; background: none; cursor: pointer; opacity: 0.5; }
-        .btn-del-month:hover { opacity: 1; text-decoration: underline; }
-
-        /* Task Cards */
-        .task-list { position: relative; padding-left: 20px; border-left: 2px dashed var(--border); margin-left: 10px; }
+        .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .month-input { font-size: 18px; font-weight: 500; color: var(--primary); border: none; background: transparent; outline: none; }
+        
+        .task-list { padding-left: 15px; border-left: 2px solid var(--border); margin-left: 10px; }
         .task-card { 
-            background: var(--card-bg); border-radius: var(--radius); padding: 15px; 
-            margin-bottom: 12px; position: relative; border: 1px solid var(--border);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: white; border-radius: var(--radius); padding: 15px; 
+            margin-bottom: 10px; border: 1px solid var(--border); display: flex; gap: 12px;
         }
-        .task-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .task-card::before { 
-            content: ''; position: absolute; left: -27px; top: 22px; 
-            width: 12px; height: 12px; border-radius: 50%; background: white; border: 2px solid var(--primary);
-        }
-
-        .task-row { display: flex; gap: 12px; align-items: flex-start; }
+        
         .status-btn { 
             width: 24px; height: 24px; border-radius: 6px; cursor: pointer; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center; border: 1px solid var(--border);
+            border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px;
         }
         .status-btn[data-s="pending"] { background: #f1f2f6; }
-        .status-btn[data-s="active"] { background: #74b9ff; border-color: #0984e3; }
-        .status-btn[data-s="critical"] { background: var(--danger); border-color: #b33915; }
-        .status-btn[data-s="done"] { background: var(--primary); border-color: #167e5d; }
+        .status-btn[data-s="active"] { background: #74b9ff; color: white; border-color: #0984e3; }
+        .status-btn[data-s="critical"] { background: var(--danger); color: white; border-color: #b33915; }
+        .status-btn[data-s="done"] { background: var(--primary); color: white; border-color: #167e5d; }
 
         .task-main { flex: 1; }
-        .task-name { font-size: 15px; font-weight: 500; width: 100%; border: none; outline: none; margin-bottom: 4px; }
-        .task-sub { font-size: 13px; color: var(--text-sub); width: 100%; border: none; outline: none; }
-        .task-tag { font-size: 11px; background: #eee; padding: 2px 8px; border-radius: 10px; border: none; width: fit-content; margin-top: 8px; }
+        input.task-name { font-size: 15px; font-weight: 500; border: none; outline: none; width: 100%; display: block; }
+        input.task-sub { font-size: 13px; color: var(--text-sub); border: none; outline: none; width: 100%; margin-top: 2px; }
+        input.task-tag { font-size: 11px; background: #eee; padding: 2px 8px; border-radius: 10px; border: none; margin-top: 8px; width: fit-content; }
 
-        .btn-del-task { color: #ccc; border: none; background: none; cursor: pointer; padding: 5px; }
-        .btn-del-task:hover { color: var(--danger); }
+        .btn-del { color: #ccc; border: none; background: none; cursor: pointer; font-size: 14px; }
+        .btn-del:hover { color: var(--danger); }
 
-        /* Buttons */
         .add-btn { 
             width: 100%; padding: 12px; border: 2px dashed var(--border); border-radius: var(--radius);
             background: transparent; color: var(--text-sub); cursor: pointer; margin-top: 10px;
-            transition: 0.3s; font-size: 14px;
         }
-        .add-btn:hover { background: #fff; border-color: var(--primary); color: var(--primary); }
-
         .add-month-btn { 
-            display: block; width: 100%; padding: 15px; background: var(--primary); color: white;
-            border: none; border-radius: var(--radius); font-size: 16px; font-weight: 500; cursor: pointer; margin-top: 20px;
+            width: 100%; padding: 15px; background: var(--primary); color: white;
+            border: none; border-radius: var(--radius); font-size: 16px; cursor: pointer; margin-top: 20px;
         }
 
-        /* Critical Box */
-        .critical-section { 
-            background: #FFF5F2; border: 1px solid #FFD9D0; border-radius: var(--radius); padding: 20px; margin-top: 40px;
-        }
-        .critical-title { color: #C0392B; font-weight: 500; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .critical-section { background: #FFF5F2; border: 1px solid #FFD9D0; border-radius: var(--radius); padding: 20px; margin-top: 40px; }
+        .critical-title { color: #C0392B; font-weight: 500; margin-bottom: 12px; }
         .critical-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .critical-item input { background: transparent; border: none; border-bottom: 1px solid #FFD9D0; flex: 1; padding: 5px; outline: none; font-size: 14px; }
+        .critical-item input { background: transparent; border: none; border-bottom: 1px solid #FFD9D0; flex: 1; padding: 5px; outline: none; }
 
         @keyframes blink { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
+<div id="loading">
+    <div style="font-size: 18px; color: var(--primary);">กำลังซิงค์ข้อมูลกับ Google Sheets...</div>
+</div>
+
 <div class="container">
     <div class="header">
-        <img src="https://files.catbox.moe/k3h6t2.jpg" class="mascot-img" alt="Mascot">
-        <div class="header-content">
-            <div class="save-status">
-                <span class="dot" id="save-dot"></span>
-                <span id="save-text">บันทึกข้อมูลแล้ว</span>
-            </div>
-            <input type="text" id="plan-title" value="แผนรีโนเวทร้าน Soon Siam" oninput="saveData()">
+        <div class="save-status">
+            <span class="dot" id="save-dot"></span>
+            <span id="save-text">เชื่อมต่อแล้ว</span>
         </div>
+        <input type="text" id="plan-title" value="กำลังโหลดแผนงาน..." oninput="saveData()">
     </div>
 
     <div id="months-container"></div>
-
     <button class="add-month-btn" onclick="addMonth()">+ เพิ่มเดือนใหม่</button>
 
     <div class="critical-section">
-        <div class="critical-title">⚠️ จุดที่ต้องระวังเป็นพิเศษ (Critical Path)</div>
+        <div class="critical-title">⚠️ จุดที่ต้องระวัง (Critical Path)</div>
         <div id="critical-items"></div>
-        <button class="add-btn" onclick="addCritical()" style="border-style: none; text-align: left; padding: 5px 0;">+ เพิ่มข้อควรระวัง</button>
+        <button class="add-btn" onclick="addCritical()" style="border: none; text-align: left; padding: 5px 0;">+ เพิ่มข้อควรระวัง</button>
     </div>
 </div>
 
 <script>
-    // รูปภาพที่ใช้เป็นไอคอนแสดงสถานะ Done (น้องตัวเล็ก)
-    const MASCOT_ICON = "https://files.catbox.moe/k3h6t2.jpg";
+    // URL เว็บแอปจาก Google Apps Script ที่คุณให้มา
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw9wXpnqUN-ydbp4MbljNhvGvnV9dImG98y1ACqKR8YvKrpGu9N9CUsIUrN2n4snqmm/exec';
 
-    const DEFAULT_DATA = {
-        title: 'แผนรีโนเวทร้าน Soon Siam',
-        months: [
-            {
-                id: 'm1', label: 'เมษายน 2569', tasks: [
-                    { id: 't1', name: 'รอแบบ Final', sub: 'ต้องได้แบบก่อนเดินหน้าทุกอย่าง', tag: 'เม.ย. 69', status: 'active' },
-                    { id: 't2', name: 'หาช่างทำร้าน', sub: 'เปรียบเทียบอย่างน้อย 3 เจ้า', tag: 'ภายใน เม.ย.', status: 'pending' }
-                ]
-            }
-        ],
-        critical: [
-            'แบบ Final ต้องเสร็จตามกำหนด ไม่เช่นนั้นงานช่างจะเลื่อนทั้งหมด',
-            'ต้องได้รับอนุมัติจากจุฬาฯ ก่อนเริ่มทุบ'
-        ]
-    };
-
-    let appData = JSON.parse(localStorage.getItem('soon_siam_v2')) || DEFAULT_DATA;
+    let appData = { title: 'แผนรีโนเวทร้าน Soon Siam', months: [], critical: [] };
     let saveTimer;
+
+    // ดึงข้อมูลจาก Google Sheets ครั้งแรก
+    async function loadData() {
+        try {
+            const response = await fetch(SCRIPT_URL);
+            const data = await response.json();
+            if (data && data.months) {
+                appData = data;
+            }
+            render();
+            document.getElementById('loading').style.display = 'none';
+        } catch (e) {
+            console.error("Error loading data:", e);
+            document.getElementById('loading').innerHTML = "เกิดข้อผิดพลาดในการโหลดข้อมูล (ตรวจสอบการตั้งค่า Deploy ใน Apps Script)";
+        }
+    }
+
+    // บันทึกข้อมูลไป Google Sheets
+    async function saveData() {
+        const dot = document.getElementById('save-dot');
+        const txt = document.getElementById('save-text');
+        dot.classList.add('saving');
+        txt.textContent = 'กำลังบันทึกไปยัง Sheets...';
+
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(async () => {
+            appData.title = document.getElementById('plan-title').value;
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // สำคัญสำหรับ Google Apps Script
+                    body: JSON.stringify(appData)
+                });
+                dot.classList.remove('saving');
+                txt.textContent = 'บันทึกสำเร็จ';
+            } catch (e) {
+                txt.textContent = 'บันทึกไม่สำเร็จ';
+            }
+        }, 1000);
+    }
 
     function render() {
         document.getElementById('plan-title').value = appData.title;
@@ -174,112 +176,64 @@
             mDiv.innerHTML = `
                 <div class="month-header">
                     <input class="month-input" value="${month.label}" oninput="updateMonth('${month.id}', this.value)">
-                    <button class="btn-del-month" onclick="deleteMonth('${month.id}')">ลบเดือน</button>
+                    <button class="btn-del" onclick="deleteMonth('${month.id}')">ลบเดือน</button>
                 </div>
                 <div class="task-list" id="tasks-${month.id}"></div>
-                <button class="add-btn" onclick="addTask('${month.id}')">+ เพิ่มงานในเดือนนี้</button>
+                <button class="add-btn" onclick="addTask('${month.id}')">+ เพิ่มงาน</button>
             `;
             container.appendChild(mDiv);
 
-            const taskContainer = document.getElementById(`tasks-${month.id}`);
+            const tContainer = document.getElementById(`tasks-${month.id}`);
             month.tasks.forEach(task => {
                 const tDiv = document.createElement('div');
                 tDiv.className = 'task-card';
                 tDiv.innerHTML = `
-                    <div class="task-row">
-                        <div class="status-btn" data-s="${task.status}" onclick="cycleStatus('${month.id}', '${task.id}')">
-                            ${task.status === 'done' ? `<img src="${MASCOT_ICON}" style="width:100%; border-radius:4px;">` : ''}
-                        </div>
-                        <div class="task-main">
-                            <input class="task-name" value="${task.name}" oninput="updateTask('${month.id}','${task.id}','name',this.value)">
-                            <input class="task-sub" value="${task.sub}" placeholder="รายละเอียด..." oninput="updateTask('${month.id}','${task.id}','sub',this.value)">
-                            <input class="task-tag" value="${task.tag}" placeholder="Tag..." oninput="updateTask('${month.id}','${task.id}','tag',this.value)">
-                        </div>
-                        <button class="btn-del-task" onclick="deleteTask('${month.id}','${task.id}')">✕</button>
+                    <div class="status-btn" data-s="${task.status}" onclick="cycleStatus('${month.id}', '${task.id}')">
+                        ${task.status === 'done' ? '✓' : ''}
                     </div>
+                    <div class="task-main">
+                        <input class="task-name" value="${task.name}" oninput="updateTask('${month.id}','${task.id}','name',this.value)">
+                        <input class="task-sub" value="${task.sub}" placeholder="รายละเอียด..." oninput="updateTask('${month.id}','${task.id}','sub',this.value)">
+                        <input class="task-tag" value="${task.tag}" placeholder="Tag..." oninput="updateTask('${month.id}','${task.id}','tag',this.value)">
+                    </div>
+                    <button class="btn-del" onclick="deleteTask('${month.id}','${task.id}')">✕</button>
                 `;
-                taskContainer.appendChild(tDiv);
+                tContainer.appendChild(tDiv);
             });
         });
 
-        const criticalContainer = document.getElementById('critical-items');
-        criticalContainer.innerHTML = '';
+        const critContainer = document.getElementById('critical-items');
+        critContainer.innerHTML = '';
         appData.critical.forEach((item, idx) => {
             const cDiv = document.createElement('div');
             cDiv.className = 'critical-item';
             cDiv.innerHTML = `
                 <input value="${item}" oninput="updateCritical(${idx}, this.value)">
-                <button class="btn-del-task" onclick="deleteCritical(${idx})">✕</button>
+                <button class="btn-del" onclick="deleteCritical(${idx})">✕</button>
             `;
-            criticalContainer.appendChild(cDiv);
+            critContainer.appendChild(cDiv);
         });
     }
 
-    // Logic Functions
-    function saveData() {
-        const dot = document.getElementById('save-dot');
-        const txt = document.getElementById('save-text');
-        dot.classList.add('saving');
-        txt.textContent = 'กำลังบันทึก...';
-
-        clearTimeout(saveTimer);
-        saveTimer = setTimeout(() => {
-            appData.title = document.getElementById('plan-title').value;
-            localStorage.setItem('soon_siam_v2', JSON.stringify(appData));
-            dot.classList.remove('saving');
-            txt.textContent = 'บันทึกข้อมูลล่าสุดแล้ว';
-        }, 800);
-    }
-
-    function addMonth() {
-        appData.months.push({ id: Date.now().toString(), label: 'เดือนใหม่', tasks: [] });
-        render(); saveData();
-    }
-
-    function deleteMonth(id) {
-        if(confirm('ลบข้อมูลเดือนนี้ทั้งหมดใช่ไหม?')) {
-            appData.months = appData.months.filter(m => m.id !== id);
-            render(); saveData();
-        }
-    }
-
-    function addTask(mid) {
-        const month = appData.months.find(m => m.id === mid);
-        month.tasks.push({ id: Date.now().toString(), name: 'งานใหม่', sub: '', tag: '', status: 'pending' });
-        render(); saveData();
-    }
-
-    function deleteTask(mid, tid) {
-        const month = appData.months.find(m => m.id === mid);
-        month.tasks = month.tasks.filter(t => t.id !== tid);
-        render(); saveData();
-    }
-
+    // ฟังก์ชันจัดการข้อมูล
+    function addMonth() { appData.months.push({ id: Date.now().toString(), label: 'ระบุเดือน', tasks: [] }); render(); saveData(); }
+    function deleteMonth(id) { if(confirm('ลบเดือนนี้?')) { appData.months = appData.months.filter(m => m.id !== id); render(); saveData(); } }
+    function addTask(mid) { appData.months.find(m => m.id === mid).tasks.push({ id: Date.now().toString(), name: 'งานใหม่', sub: '', tag: '', status: 'pending' }); render(); saveData(); }
+    function deleteTask(mid, tid) { const m = appData.months.find(m => m.id === mid); m.tasks = m.tasks.filter(t => t.id !== tid); render(); saveData(); }
     function cycleStatus(mid, tid) {
         const statuses = ['pending', 'active', 'critical', 'done'];
-        const month = appData.months.find(m => m.id === mid);
-        const task = month.tasks.find(t => t.id === tid);
-        let idx = statuses.indexOf(task.status);
-        task.status = statuses[(idx + 1) % statuses.length];
+        const task = appData.months.find(m => m.id === mid).tasks.find(t => t.id === tid);
+        task.status = statuses[(statuses.indexOf(task.status) + 1) % statuses.length];
         render(); saveData();
     }
-
-    function updateMonth(mid, val) { 
-        appData.months.find(m => m.id === mid).label = val; 
-        saveData(); 
-    }
-    
-    function updateTask(mid, tid, field, val) {
-        const month = appData.months.find(m => m.id === mid);
-        month.tasks.find(t => t.id === tid)[field] = val;
-        saveData();
-    }
-
+    function updateMonth(mid, val) { appData.months.find(m => m.id === mid).label = val; saveData(); }
+    function updateTask(mid, tid, f, v) { appData.months.find(m => m.id === mid).tasks.find(t => t.id === tid)[f] = v; saveData(); }
     function addCritical() { appData.critical.push(''); render(); saveData(); }
     function updateCritical(idx, val) { appData.critical[idx] = val; saveData(); }
     function deleteCritical(idx) { appData.critical.splice(idx, 1); render(); saveData(); }
 
-    render();
+    // เริ่มทำงาน
+    loadData();
 </script>
 
 </body>
