@@ -111,41 +111,39 @@ export default function App() {
   const pollTimer = useRef(null);
 
   // ── SHARED STORAGE ────────────────────────────────────────
-  const STORAGE_KEY = 'https://script.google.com/macros/s/AKfycbw9wXpnqUN-ydbp4MbljNhvGvnV9dImG98y1ACqKR8YvKrpGu9N9CUsIUrN2n4snqmm/exec';
+  const STORAGE_KEY = 'soonsiam_shared_v1';
 
-const loadData = useCallback(async () => {
-  try {
-    const res = await fetch(SHEET_API_URL);
-    const text = await res.text(); // รับค่าเป็น text เพราะชีตส่งคืนเป็น JSON string
-    if (text && text !== "{}" && text !== "Success") {
-      setData(JSON.parse(text));
-    } else {
+  const loadData = useCallback(async () => {
+    try {
+      const res = await window.storage.get(STORAGE_KEY, true); // shared=true
+      if (res && res.value) {
+        setData(JSON.parse(res.value));
+      } else {
+        setData(JSON.parse(JSON.stringify(DEFAULTS)));
+      }
+      setSaveState('ok');
+    } catch {
       setData(JSON.parse(JSON.stringify(DEFAULTS)));
+      setSaveState('ok');
     }
-    setSaveState('ok');
-  } catch (err) {
-    console.error("Load error:", err);
-    setData(JSON.parse(JSON.stringify(DEFAULTS)));
-    setSaveState('ok');
-  }
-}, []);
+  }, []);
 
   // Poll every 8s for updates from other users
-const startPolling = useCallback(() => {
-  pollTimer.current = setInterval(async () => {
-    try {
-      const res = await fetch(SHEET_API_URL);
-      const text = await res.text();
-      if (text && text !== "{}" && text !== "Success") {
-        const fresh = JSON.parse(text);
-        setData(prev => {
-          if (JSON.stringify(prev) !== JSON.stringify(fresh)) return fresh;
-          return prev;
-        });
-      }
-    } catch {}
-  }, 15000); // แนะนำให้ปรับเป็น 15-30 วินาที เพื่อไม่ให้ Google Sheets ทำงานหนักเกินไป
-}, []);
+  const startPolling = useCallback(() => {
+    pollTimer.current = setInterval(async () => {
+      try {
+        const res = await window.storage.get(STORAGE_KEY, true);
+        if (res && res.value) {
+          const fresh = JSON.parse(res.value);
+          setData(prev => {
+            // only update if different (avoid stomping mid-edit)
+            if (JSON.stringify(prev) !== JSON.stringify(fresh)) return fresh;
+            return prev;
+          });
+        }
+      } catch {}
+    }, 8000);
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -153,25 +151,19 @@ const startPolling = useCallback(() => {
     return () => clearInterval(pollTimer.current);
   }, []);
 
-const save = useCallback(async (newData) => {
-  setSaveState('saving');
-  clearTimeout(saveTimer.current);
-  saveTimer.current = setTimeout(async () => {
-    try {
-      // ส่งข้อมูลไปที่ Apps Script ด้วยวิธี POST
-      await fetch(SHEET_API_URL, {
-        method: 'POST',
-        mode: 'no-cors', // จำเป็นสำหรับ Apps Script
-        body: JSON.stringify(newData),
-      });
-      setSaveState('ok');
-      showToast('บันทึกลง Google Sheets แล้ว');
-    } catch (err) {
-      console.error("Save error:", err);
-      setSaveState('err');
-    }
-  }, 1200); // หน่วงเวลาสักนิดก่อนบันทึกจริง
-}, []);
+  const save = useCallback(async (newData) => {
+    setSaveState('saving');
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      try {
+        await window.storage.set(STORAGE_KEY, JSON.stringify(newData), true); // shared=true
+        setSaveState('ok');
+        showToast('บันทึกแล้ว — ทุกคนเห็นแล้ว');
+      } catch {
+        setSaveState('err');
+      }
+    }, 600);
+  }, []);
 
   const update = useCallback((updater) => {
     setData(prev => {
@@ -471,7 +463,7 @@ function Vendors({ data, update, setLb, showToast }) {
         update(d => { d.vendors.find(x => x.id === vid).imgs.push(e.target.result); return d; });
         showToast('อัปโหลดรูปแล้ว');
       };
-      r.readAsData(file);
+      r.readAsDataURL(file);
     });
   };
 
