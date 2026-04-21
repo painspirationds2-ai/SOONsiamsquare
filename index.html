@@ -506,7 +506,9 @@ async function loadFromSheets(){
 }
 function localFallback(){
   setSave('err','ไม่ได้ต่อ Sheets (ใช้ local)');
-  boot();
+  window.onload = () => {
+  loadFromSheets(); // ให้เริ่มโหลดเมื่อหน้าต่างพร้อม
+};
 }
 
 // ── SAVE → SHEETS + LOCAL ─────────────────────────────────
