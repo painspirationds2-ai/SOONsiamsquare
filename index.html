@@ -153,19 +153,25 @@ const startPolling = useCallback(() => {
     return () => clearInterval(pollTimer.current);
   }, []);
 
-  const save = useCallback(async (newData) => {
-    setSaveState('saving');
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
-      try {
-        await window.storage.set(STORAGE_KEY, JSON.stringify(newData), true); // shared=true
-        setSaveState('ok');
-        showToast('บันทึกแล้ว — ทุกคนเห็นแล้ว');
-      } catch {
-        setSaveState('err');
-      }
-    }, 600);
-  }, []);
+const save = useCallback(async (newData) => {
+  setSaveState('saving');
+  clearTimeout(saveTimer.current);
+  saveTimer.current = setTimeout(async () => {
+    try {
+      // ส่งข้อมูลไปที่ Apps Script ด้วยวิธี POST
+      await fetch(SHEET_API_URL, {
+        method: 'POST',
+        mode: 'no-cors', // จำเป็นสำหรับ Apps Script
+        body: JSON.stringify(newData),
+      });
+      setSaveState('ok');
+      showToast('บันทึกลง Google Sheets แล้ว');
+    } catch (err) {
+      console.error("Save error:", err);
+      setSaveState('err');
+    }
+  }, 1200); // หน่วงเวลาสักนิดก่อนบันทึกจริง
+}, []);
 
   const update = useCallback((updater) => {
     setData(prev => {
