@@ -327,39 +327,64 @@ nav{background:var(--bk);position:sticky;top:0;z-index:100;
 
 <!-- OVERVIEW -->
 <div class="page on" id="page-overview">
-  <div class="hero">
-    <div class="hero-txt">
-      <div class="eyebrow">SOON SIAM SQUARE — RENOVATION HQ</div>
-      <h1 class="hero-h">แผน<b>รีโนเวท</b><br>ร้าน Soon Siam</h1>
-      <p class="hero-sub">ซิงค์ Google Sheets — ทุกคนเห็นการอัปเดตพร้อมกัน</p>
-      <div class="target-chip">TARGET: เริ่มรีโนเวท มิถุนายน 2569</div>
-    </div>
-    <div class="mascot">
-      <svg width="96" height="114" viewBox="0 0 100 118" fill="none">
-        <ellipse cx="50" cy="38" rx="24" ry="24" fill="#111"/>
-        <ellipse cx="35" cy="50" rx="17" ry="16" fill="#111"/>
-        <ellipse cx="65" cy="50" rx="17" ry="16" fill="#111"/>
-        <ellipse cx="50" cy="56" rx="17" ry="15" fill="#111"/>
-        <ellipse cx="50" cy="46" rx="21" ry="21" fill="#111"/>
-        <ellipse cx="50" cy="46" rx="29" ry="29" fill="none" stroke="#25B874" stroke-width="1.2" stroke-dasharray="3 5" opacity=".3"/>
-        <ellipse cx="42" cy="42" rx="8.5" ry="6.5" fill="white"/>
-        <ellipse cx="58" cy="42" rx="8.5" ry="6.5" fill="white"/>
-        <ellipse cx="43" cy="43" rx="5.5" ry="5" fill="#111"/>
-        <ellipse cx="59" cy="43" rx="5.5" ry="5" fill="#111"/>
-        <circle cx="44.5" cy="41" r="2" fill="white"/>
-        <circle cx="60.5" cy="41" r="2" fill="white"/>
-        <path d="M35 35 Q42 32 49 35" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-        <path d="M51 35 Q58 32 65 35" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-        <rect x="36" y="68" width="12" height="26" rx="6" fill="#111"/>
-        <rect x="52" y="68" width="12" height="26" rx="6" fill="#111"/>
-        <ellipse cx="42" cy="94" rx="11" ry="6.5" fill="#111"/>
-        <ellipse cx="58" cy="94" rx="11" ry="6.5" fill="#111"/>
-        <text x="50" y="112" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#25B874" letter-spacing="2.5" font-weight="700">SOON</text>
+
+  <!-- top bar -->
+  <div style="background:var(--bk);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <svg width="22" height="22" viewBox="0 0 80 80" fill="none">
+        <ellipse cx="40" cy="30" rx="20" ry="20" fill="#25B874"/>
+        <ellipse cx="28" cy="40" rx="14" ry="13" fill="#25B874"/>
+        <ellipse cx="52" cy="40" rx="14" ry="13" fill="#25B874"/>
+        <ellipse cx="40" cy="46" rx="14" ry="12" fill="#25B874"/>
+        <ellipse cx="40" cy="38" rx="18" ry="18" fill="#25B874"/>
+        <ellipse cx="33" cy="33" rx="7" ry="5.5" fill="white"/>
+        <ellipse cx="47" cy="33" rx="7" ry="5.5" fill="white"/>
+        <ellipse cx="34" cy="34" rx="4.5" ry="4" fill="#111"/>
+        <ellipse cx="48" cy="34" rx="4.5" ry="4" fill="#111"/>
+        <rect x="30" y="56" width="9" height="18" rx="4.5" fill="#25B874"/>
+        <rect x="41" y="56" width="9" height="18" rx="4.5" fill="#25B874"/>
+        <ellipse cx="34.5" cy="74" rx="9" ry="5" fill="#25B874"/>
+        <ellipse cx="45.5" cy="74" rx="9" ry="5" fill="#25B874"/>
       </svg>
+      <span style="color:#fff;font-weight:700;font-size:15px;letter-spacing:.04em;">SOON<span style="color:#25B874">SIAM</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div id="ov-stat-done" style="font-size:12px;color:#888;"></div>
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;background:#0F3D28;border:1px solid #1A5C3A;color:#25B874;padding:4px 12px;border-radius:99px;">เป้าหมาย: มิ.ย. 2569</div>
     </div>
   </div>
-  <div class="stat-row" id="stat-row"></div>
-  <div id="month-cards-wrap"></div>
+
+  <!-- month table -->
+  <div style="background:var(--wh);border:1px solid var(--wh3);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table id="ov-table" style="width:100%;border-collapse:collapse;table-layout:fixed;min-width:320px;">
+        <colgroup>
+          <col style="width:34%"><col style="width:33%"><col style="width:33%">
+        </colgroup>
+        <thead id="ov-thead"></thead>
+        <tbody id="ov-tbody"></tbody>
+        <tfoot id="ov-tfoot"></tfoot>
+      </table>
+    </div>
+    <!-- legend -->
+    <div style="display:flex;flex-wrap:wrap;gap:10px;padding:10px 14px 12px;border-top:1px solid var(--wh3);background:var(--wh2);">
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gr2);">
+        <div style="width:10px;height:10px;border-radius:50%;background:#E8F7F1;border:2px solid #1D9E75;"></div>จบแล้ว
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gr2);">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--blubg);border:2px solid #378ADD;"></div>กำลังทำ
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gr2);">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--redbg);border:2px solid #E24B4A;"></div>ด่วน
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gr2);">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--wh3);border:2px solid #BBB;"></div>รอ
+      </div>
+      <div style="margin-left:auto;font-size:10px;color:var(--gr);font-family:'Space Mono',monospace;" id="ov-sync-time"></div>
+    </div>
+  </div>
+
+  <!-- budget mini (show only if data exists) -->
   <div class="panel" id="budget-panel" style="display:none">
     <div class="panel-head">
       <div class="panel-title">สัดส่วนงบประมาณ</div>
@@ -367,6 +392,7 @@ nav{background:var(--bk);position:sticky;top:0;z-index:100;
     </div>
     <div id="budget-bars"></div>
   </div>
+
 </div>
 
 <!-- TIMELINE -->
@@ -562,78 +588,101 @@ function renderAll(){
 
 // ── OVERVIEW (หัวใจสำคัญ) ────────────────────────────────
 function renderOverview(){
-  // Stats
-  let tot=0,done=0,crit=0;
-  D.months.forEach(m=>m.tasks.forEach(t=>{tot++;if(t.status==='done')done++;if(t.status==='critical')crit++;}));
+  const COL_STYLE=[
+    {th:'background:#EBF4FF;color:#0C447C;border-bottom:2.5px solid #378ADD;',fill:'#378ADD'},
+    {th:'background:#FEF7E0;color:#633806;border-bottom:2.5px solid #EF9F27;',fill:'#EF9F27'},
+    {th:'background:#EAF3DE;color:#27500A;border-bottom:2.5px solid #639922;',fill:'#639922'},
+  ];
+  const SRING={
+    done:{bg:'#E8F7F1',bd:'#1D9E75',c:'#0F5238',icon:'&#10003;'},
+    active:{bg:'#EBF4FF',bd:'#378ADD',c:'#0C447C',icon:'&#9681;'},
+    critical:{bg:'#FCEBEB',bd:'#E24B4A',c:'#791F1F',icon:'!'},
+    pending:{bg:'var(--wh3)',bd:'#BBB',c:'var(--gr)',icon:'&#9675;'},
+  };
+  const cyc={pending:'active',active:'done',done:'pending',critical:'done'};
+  const months=D.months.slice(0,3);
+  const maxRows=Math.max(...months.map(m=>m.tasks.length),1);
+
+  const thead=document.getElementById('ov-thead');
+  if(thead){
+    thead.innerHTML='<tr>'+months.map((m,i)=>{
+      const cs=COL_STYLE[i]||COL_STYLE[2];
+      const short=m.label.replace('เมษายน','เม.ย.').replace('พฤษภาคม','พ.ค.').replace('มิถุนายน','มิ.ย.');
+      const doneN=m.tasks.filter(t=>t.status==='done').length;
+      return'<th style="padding:10px 8px 9px;text-align:left;'+cs.th+'"><div style="font-size:15px;font-weight:700;">'+esc(short)+'</div><div style="font-size:10px;font-weight:400;opacity:.7;margin-top:2px;">'+doneN+'/'+m.tasks.length+' จบแล้ว</div></th>';
+    }).join('')+'</tr>';
+  }
+
+  const tbody=document.getElementById('ov-tbody');
+  if(tbody){
+    tbody.innerHTML='';
+    for(let r=0;r<maxRows;r++){
+      const tr=document.createElement('tr');
+      months.forEach((m,mi)=>{
+        const td=document.createElement('td');
+        td.style.cssText='padding:0;vertical-align:top;border-right:'+(mi<months.length-1?'0.5px solid var(--wh3)':'none')+';';
+        const t=m.tasks[r];
+        if(t){
+          const s=SRING[t.status]||SRING.pending;
+          const div=document.createElement('div');
+          div.style.cssText='display:flex;align-items:flex-start;gap:7px;padding:9px 8px;border-bottom:0.5px solid var(--wh3);cursor:pointer;transition:background .12s;';
+          div.onmouseenter=function(){this.style.background='var(--wh2)';};
+          div.onmouseleave=function(){this.style.background='';};
+          div.innerHTML='<div style="width:18px;height:18px;border-radius:50%;border:2px solid '+s.bd+';background:'+s.bg+';color:'+s.c+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;">'+s.icon+'</div>'
+            +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;color:var(--bk);line-height:1.35;word-break:break-word;'+(t.status==='done'?'text-decoration:line-through;color:var(--gr);':'')+'">'
+            +esc(t.name)+'</div>'+(t.tag?'<div style="font-size:10px;color:var(--gr);margin-top:3px;">'+esc(t.tag)+'</div>':'')+'</div>';
+          div.onclick=function(){t.status=cyc[t.status]||'pending';save();renderOverview();};
+          td.appendChild(div);
+        }
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    }
+  }
+
+  const tfoot=document.getElementById('ov-tfoot');
+  if(tfoot){
+    tfoot.innerHTML='<tr>'+months.map((m,i)=>{
+      const cs=COL_STYLE[i]||COL_STYLE[2];
+      const doneN=m.tasks.filter(t=>t.status==='done').length;
+      const total=m.tasks.length;
+      const pct=total?Math.round(doneN/total*100):0;
+      return'<td style="padding:0;border-right:'+(i<months.length-1?'0.5px solid var(--wh3)':'none')+';">'
+        +'<div style="padding:8px 8px 10px;background:var(--wh2);border-top:2px solid var(--wh3);">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+        +'<span style="font-size:10px;color:var(--gr);">'+doneN+'/'+total+' งาน</span>'
+        +'<span style="font-size:11px;font-weight:700;color:'+cs.fill+';">'+pct+'%</span></div>'
+        +'<div style="height:5px;background:var(--wh3);border-radius:99px;overflow:hidden;">'
+        +'<div style="height:100%;border-radius:99px;background:'+cs.fill+';width:'+pct+'%;transition:width .5s;"></div></div></div></td>';
+    }).join('')+'</tr>';
+  }
+
+  let tot=0,done=0;
+  D.months.forEach(m=>m.tasks.forEach(t=>{tot++;if(t.status==='done')done++;}));
+  const sd=document.getElementById('ov-stat-done');
+  if(sd) sd.textContent='เสร็จแล้ว '+done+'/'+tot+' งาน';
+  const st2=document.getElementById('ov-sync-time');
+  if(st2) st2.textContent=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+
   let grand=0,paid=0;
   D.budget.forEach(s=>s.rows.forEach(r=>{const a=num(r.amt);grand+=a;if(r.status==='paid')paid+=a;}));
-
-  document.getElementById('stat-row').innerHTML=`
-    <div class="sc"><div class="sc-num">${tot}</div><div class="sc-lbl">งานทั้งหมด</div></div>
-    <div class="sc"><div class="sc-num" style="color:#1A7A52">${done}</div><div class="sc-lbl">เสร็จแล้ว</div></div>
-    <div class="sc"><div class="sc-num" style="color:#D13B2A">${crit}</div><div class="sc-lbl">งานด่วน</div></div>
-    <div class="sc"><div class="sc-num">${grand?grand.toLocaleString():'—'}</div><div class="sc-lbl">งบรวม (฿)</div>${paid?`<div class="sc-sub">จ่ายแล้ว ${paid.toLocaleString()}</div>`:''}</div>
-  `;
-
-  // MONTH CARDS — หลักของหน้าแรก
-  const wrap=document.getElementById('month-cards-wrap');
-  wrap.innerHTML='<div style="font-family:\'Space Mono\',monospace;font-size:10px;letter-spacing:.15em;color:var(--gr);text-transform:uppercase;margin-bottom:12px;">ความคืบหน้าแต่ละเดือน</div>';
-  const grid=document.createElement('div');
-  grid.className='month-cards';
-
-  D.months.forEach(m=>{
-    const total=m.tasks.length;
-    const doneN=m.tasks.filter(t=>t.status==='done').length;
-    const pct=total?Math.round(doneN/total*100):0;
-
-    // bar color
-    const barColor=pct===100?'#1A7A52':pct>=50?'#1A6FBB':'#C47B00';
-
-    const card=document.createElement('div');
-    card.className='mc';
-    card.innerHTML=`
-      <div class="mc-head">
-        <div class="mc-month">${esc(m.label)}</div>
-        <div class="mc-title">ต้องจบ ${doneN}/${total} งาน</div>
-        <div class="mc-progress-bar"><div class="mc-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
-        <div class="mc-pct" style="color:${barColor}">${pct}% เสร็จแล้ว${pct===100?' ✓':''}</div>
-      </div>
-      <div class="mc-tasks">
-        ${m.tasks.map(t=>{
-          const tc=TCOLOR[t.status]||TCOLOR.pending;
-          const sc=SCOLOR[t.status]||SCOLOR.pending;
-          return`<div class="mc-task">
-            <div class="mc-task-dot" style="background:${sc.dot}"></div>
-            <div class="mc-task-name${t.status==='done'?' done':''}">${esc(t.name)}</div>
-            <div class="mc-tag" style="background:${tc.bg};color:${tc.c};border-color:${tc.bd}">${{pending:'รอ',active:'กำลังทำ',critical:'ด่วน!',done:'จบแล้ว'}[t.status]||t.status}</div>
-          </div>`;
-        }).join('')}
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-  wrap.appendChild(grid);
-
-  // Budget bars
   const anyBudget=D.budget.some(s=>s.rows.some(r=>num(r.amt)>0));
   const bp=document.getElementById('budget-panel');
-  bp.style.display=anyBudget?'':'none';
+  if(bp) bp.style.display=anyBudget?'':'none';
   if(anyBudget){
-    document.getElementById('bar-total').textContent=grand.toLocaleString();
-    const bars=document.getElementById('budget-bars');bars.innerHTML='';
-    D.budget.forEach(s=>{
-      const st=s.rows.reduce((a,r)=>a+num(r.amt),0);if(!st)return;
-      const pct=grand?Math.round(st/grand*100):0;
-      bars.innerHTML+=`<div class="brow">
-        <div class="blbl">${esc(s.title.split('(')[0].trim())}</div>
-        <div class="bbg"><div class="bfill" style="width:${pct}%"></div></div>
-        <div class="bamt">${fmt(st)} ฿</div>
-      </div>`;
-    });
+    const bt=document.getElementById('bar-total');if(bt)bt.textContent=grand.toLocaleString();
+    const bars=document.getElementById('budget-bars');if(bars){bars.innerHTML='';
+      D.budget.forEach(s=>{
+        const st=s.rows.reduce((a,r)=>a+num(r.amt),0);if(!st)return;
+        const pct=grand?Math.round(st/grand*100):0;
+        bars.innerHTML+='<div class="brow"><div class="blbl">'+esc(s.title.split('(')[0].trim())+'</div>'
+          +'<div class="bbg"><div class="bfill" style="width:'+pct+'%"></div></div>'
+          +'<div class="bamt">'+fmt(st)+' ฿</div></div>';
+      });
+    }
   }
 }
 
-// ── TIMELINE ─────────────────────────────────────────────
 function renderTimeline(){
   const mc=document.getElementById('months-cont');mc.innerHTML='';
   D.months.forEach(m=>{
