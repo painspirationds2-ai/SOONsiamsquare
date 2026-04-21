@@ -498,14 +498,18 @@ async function loadFromSheets(){
   try{
     setSave('saving','กำลังโหลดจาก Sheets...');
     const r=await fetch(SCRIPT_URL+'?t='+Date.now());
-    const j=await r.json();
-    if(j.ok && j.data){D=j.data;localStorage.setItem('soonsiam_v5',JSON.stringify(D));}
-    syncOk=true;setSave('ok');
-  }catch(e){localFallback();}
-  boot();
-}
-function localFallback(){
-  setSave('err','ไม่ได้ต่อ Sheets (ใช้ local)');
+    async function loadFromSheets(){
+  if(!SCRIPT_URL||SCRIPT_URL.includes('PASTE'))return localFallback();
+  try{
+    setSave('saving','กำลังโหลดจาก Sheets...');
+    const r = await fetch(SCRIPT_URL + '?t=' + Date.now());
+    const text = await r.text(); // เปลี่ยนจาก .json() เป็น .text()
+    if (text && text !== "Success" && text !== "{}") {
+      D = JSON.parse(text);
+      localStorage.setItem('soonsiam_v5', JSON.stringify(D));
+    }
+    syncOk=true; setSave('ok');
+  } catch(e) { localFallback(); }
   boot();
 }
 
@@ -515,12 +519,20 @@ function save(){
   setSave('saving');
   clearTimeout(saveT);
   saveT=setTimeout(async()=>{
-    if(!SCRIPT_URL||SCRIPT_URL.includes('PASTE')){setSave('err','https://script.google.com/macros/s/AKfycbw9wXpnqUN-ydbp4MbljNhvGvnV9dImG98y1ACqKR8YvKrpGu9N9CUsIUrN2n4snqmm/exec');return;}
-    try{
-      await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(D)});
-      setSave('ok');toast('บันทึกไปยัง Sheets แล้ว');
-    }catch(e){setSave('err');}
-  },800);
+    if(!SCRIPT_URL||SCRIPT_URL.includes('PASTE')){setSave('err','ยังไม่ได้ตั้งค่า Script URL');return;}
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // สำคัญมาก
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(D)
+      });
+      setSave('ok');
+      toast('บันทึกลง Google Sheets แล้ว');
+    } catch(e) { 
+      setSave('err'); 
+    }
+  }, 1000); // หน่วงเวลา 1 วินาทีก่อนเซฟ
 }
 
 // ── BOOT ──────────────────────────────────────────────────
